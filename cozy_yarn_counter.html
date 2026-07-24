@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#8d6e63" />
+  <title>Cozy Yarn Counter</title>
+  <style>
+    :root {
+      --bg: #fbf7f2;
+      --card: #ffffff;
+      --text: #342a27;
+      --muted: #756864;
+      --accent: #8d6e63;
+      --accent-dark: #684e46;
+      --soft: #eee3da;
+      --danger: #b85c5c;
+      --shadow: 0 10px 30px rgba(70, 48, 40, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 10% 0%, #f4e5dc 0, transparent 30%),
+        radial-gradient(circle at 100% 10%, #e8e1ef 0, transparent 26%),
+        var(--bg);
+      color: var(--text);
+      padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+    }
+
+    .app {
+      width: min(100%, 560px);
+      margin: 0 auto;
+      padding: 22px 0 36px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.65rem, 6vw, 2.2rem);
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    button, input, textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--card);
+      color: var(--accent-dark);
+      box-shadow: var(--shadow);
+      font-size: 1.45rem;
+    }
+
+    .project-card {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(141,110,99,0.13);
+      border-radius: 26px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .project-name {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      font-weight: 750;
+      font-size: 1.2rem;
+      color: var(--text);
+      outline: none;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .counter-label {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .count {
+      text-align: center;
+      font-size: clamp(5rem, 24vw, 8rem);
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.08em;
+      margin: 18px 0 22px;
+      user-select: none;
+    }
+
+    .main-controls {
+      display: grid;
+      grid-template-columns: 1fr 1.45fr 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .main-controls button {
+      border-radius: 22px;
+      min-height: 76px;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(80, 54, 47, 0.12);
+    }
+
+    .minus, .plus {
+      background: var(--soft);
+      color: var(--accent-dark);
+      font-size: 2.2rem;
+    }
+
+    .plus {
+      min-height: 96px !important;
+      background: var(--accent);
+      color: white;
+      font-size: 3rem;
+    }
+
+    .main-controls button:active {
+      transform: scale(0.97);
+    }
+
+    .progress-wrap {
+      margin-top: 22px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      height: 12px;
+      border-radius: 99px;
+      background: var(--soft);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: var(--accent);
+      transition: width 180ms ease;
+    }
+
+    .settings {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .field {
+      background: var(--soft);
+      border-radius: 16px;
+      padding: 10px 12px;
+    }
+
+    .field label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+    }
+
+    .field input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    textarea {
+      width: 100%;
+      margin-top: 12px;
+      min-height: 84px;
+      resize: vertical;
+      border: 0;
+      border-radius: 16px;
+      padding: 12px;
+      background: var(--soft);
+      color: var(--text);
+      outline: none;
+    }
+
+    .secondary-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .secondary-controls button {
+      flex: 1;
+      min-height: 44px;
+      border-radius: 14px;
+      background: var(--soft);
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
+
+    .danger {
+      color: var(--danger) !important;
+    }
+
+    .projects {
+      margin-top: 18px;
+    }
+
+    .projects h2 {
+      font-size: 1rem;
+      margin: 0 0 10px;
+      color: var(--muted);
+    }
+
+    .project-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .project-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+      background: rgba(255,255,255,0.76);
+      border-radius: 16px;
+      padding: 11px 12px;
+      border: 1px solid rgba(141,110,99,0.10);
+    }
+
+    .project-row.active {
+      outline: 2px solid rgba(141,110,99,0.28);
+    }
+
+    .project-title {
+      font-weight: 750;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .project-count {
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .project-open, .project-delete {
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: var(--soft);
+      color: var(--accent-dark);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(22px + env(safe-area-inset-bottom));
+      transform: translateX(-50%) translateY(16px);
+      opacity: 0;
+      pointer-events: none;
+      background: #342a27;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 99px;
+      transition: 180ms ease;
+      font-size: 0.9rem;
+      z-index: 9;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 380px) {
+      .settings { grid-template-columns: 1fr; }
+      .project-card { padding: 16px; }
+      .main-controls { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <h1>🧶 Cozy Counter</h1>
+        <p class="subtitle">Rows, rounds, stitches—or anything yarny.</p>
+      </div>
+      <button class="icon-btn" id="newProjectBtn" aria-label="New project">＋</button>
+    </header>
+
+    <section class="project-card">
+      <input id="projectName" class="project-name" value="My Yarn Project" aria-label="Project name" />
+      <div class="counter-label" id="counterLabel">Row counter</div>
+      <div class="count" id="count" aria-live="polite">0</div>
+
+      <div class="main-controls">
+        <button class="minus" id="minusBtn" aria-label="Subtract one">−</button>
+        <button class="plus" id="plusBtn" aria-label="Add one">＋</button>
+        <button class="minus" id="addFiveBtn" aria-label="Add five">+5</button>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="progressText">0 of 100</span>
+          <span id="percentText">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+
+      <div class="settings">
+        <div class="field">
+          <label for="counterType">Counting</label>
+          <input id="counterType" value="Rows" />
+        </div>
+        <div class="field">
+          <label for="target">Target</label>
+          <input id="target" type="number" min="0" value="100" inputmode="numeric" />
+        </div>
+      </div>
+
+      <textarea id="notes" placeholder="Pattern notes, yarn color, needle size…"></textarea>
+
+      <div class="secondary-controls">
+        <button id="undoBtn">↶ Undo</button>
+        <button id="resetBtn" class="danger">Reset</button>
+      </div>
+    </section>
+
+    <section class="projects">
+      <h2>Your projects</h2>
+      <div class="project-list" id="projectList"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = "cozy-yarn-counter-v1";
+
+    let state = loadState();
+    let undoStack = [];
+
+    const els = {
+      projectName: document.getElementById("projectName"),
+      counterLabel: document.getElementById("counterLabel"),
+      count: document.getElementById("count"),
+      minusBtn: document.getElementById("minusBtn"),
+      plusBtn: document.getElementById("plusBtn"),
+      addFiveBtn: document.getElementById("addFiveBtn"),
+      target: document.getElementById("target"),
+      counterType: document.getElementById("counterType"),
+      notes: document.getElementById("notes"),
+      progressText: document.getElementById("progressText"),
+      percentText: document.getElementById("percentText"),
+      progressBar: document.getElementById("progressBar"),
+      undoBtn: document.getElementById("undoBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      newProjectBtn: document.getElementById("newProjectBtn"),
+      projectList: document.getElementById("projectList"),
+      toast: document.getElementById("toast")
+    };
+
+    function makeProject(name = "New Yarn Project") {
+      return {
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+        name,
+        count: 0,
+        target: 100,
+        counterType: "Rows",
+        notes: ""
+      };
+    }
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved?.projects?.length) return saved;
+      } catch (_) {}
+      const first = makeProject("My Yarn Project");
+      return { activeId: first.id, projects: [first] };
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function activeProject() {
+      return state.projects.find(p => p.id === state.activeId) || state.projects[0];
+    }
+
+    function pushUndo() {
+      const p = activeProject();
+      undoStack.push({ id: p.id, count: p.count });
+      if (undoStack.length > 50) undoStack.shift();
+    }
+
+    function setCount(next) {
+      const p = activeProject();
+      pushUndo();
+      p.count = Math.max(0, Number(next) || 0);
+      saveState();
+      render();
+      if (p.target > 0 && p.count === p.target) showToast("Target reached! 🎉");
+    }
+
+    function updateField(field, value) {
+      const p = activeProject();
+      p[field] = value;
+      saveState();
+      renderProjectList();
+      renderProgress();
+    }
+
+    function render() {
+      const p = activeProject();
+      els.projectName.value = p.name;
+      els.count.textContent = p.count;
+      els.target.value = p.target;
+      els.counterType.value = p.counterType;
+      els.notes.value = p.notes;
+      els.counterLabel.textContent = `${p.counterType || "Row"} counter`;
+      renderProgress();
+      renderProjectList();
+    }
+
+    function renderProgress() {
+      const p = activeProject();
+      const target = Math.max(0, Number(p.target) || 0);
+      const percent = target > 0 ? Math.min(100, Math.round((p.count / target) * 100)) : 0;
+      els.progressText.textContent = target > 0 ? `${p.count} of ${target}` : `${p.count} counted`;
+      els.percentText.textContent = target > 0 ? `${percent}%` : "No target";
+      els.progressBar.style.width = `${percent}%`;
+    }
+
+    function renderProjectList() {
+      els.projectList.innerHTML = "";
+      state.projects.forEach(project => {
+        const row = document.createElement("div");
+        row.className = "project-row" + (project.id === state.activeId ? " active" : "");
+
+        const title = document.createElement("div");
+        title.className = "project-title";
+        title.textContent = project.name || "Untitled project";
+
+        const count = document.createElement("div");
+        count.className = "project-count";
+        count.textContent = project.count;
+
+        const open = document.createElement("button");
+        open.className = "project-open";
+        open.textContent = project.id === state.activeId ? "Open" : "View";
+        open.onclick = () => {
+          state.activeId = project.id;
+          undoStack = [];
+          saveState();
+          render();
+        };
+
+        row.append(title, count, open);
+
+        if (state.projects.length > 1) {
+          const del = document.createElement("button");
+          del.className = "project-delete";
+          del.textContent = "×";
+          del.setAttribute("aria-label", `Delete ${project.name}`);
+          del.onclick = () => {
+            if (!confirm(`Delete "${project.name}"?`)) return;
+            state.projects = state.projects.filter(p => p.id !== project.id);
+            if (state.activeId === project.id) state.activeId = state.projects[0].id;
+            saveState();
+            render();
+          };
+          row.append(del);
+        }
+
+        els.projectList.append(row);
+      });
+    }
+
+    function showToast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => els.toast.classList.remove("show"), 1500);
+    }
+
+    els.plusBtn.addEventListener("click", () => setCount(activeProject().count + 1));
+    els.minusBtn.addEventListener("click", () => setCount(activeProject().count - 1));
+    els.addFiveBtn.addEventListener("click", () => setCount(activeProject().count + 5));
+
+    els.undoBtn.addEventListener("click", () => {
+      const previous = undoStack.pop();
+      if (!previous || previous.id !== activeProject().id) {
+        showToast("Nothing to undo");
+        return;
+      }
+      activeProject().count = previous.count;
+      saveState();
+      render();
+    });
+
+    els.resetBtn.addEventListener("click", () => {
+      if (!confirm("Reset this counter to zero?")) return;
+      setCount(0);
+    });
+
+    els.newProjectBtn.addEventListener("click", () => {
+      const p = makeProject(`Project ${state.projects.length + 1}`);
+      state.projects.push(p);
+      state.activeId = p.id;
+      undoStack = [];
+      saveState();
+      render();
+      els.projectName.focus();
+      els.projectName.select();
+    });
+
+    els.projectName.addEventListener("input", e => updateField("name", e.target.value));
+    els.target.addEventListener("input", e => updateField("target", Math.max(0, Number(e.target.value) || 0)));
+    els.counterType.addEventListener("input", e => updateField("counterType", e.target.value));
+    els.notes.addEventListener("input", e => updateField("notes", e.target.value));
+
+    document.addEventListener("keydown", e => {
+      if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+      if (e.key === "ArrowUp" || e.key === "+" || e.key === " ") {
+        e.preventDefault();
+        setCount(activeProject().count + 1);
+      }
+      if (e.key === "ArrowDown" || e.key === "-") {
+        e.preventDefault();
+        setCount(activeProject().count - 1);
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
