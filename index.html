@@ -1,857 +1,150 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-  <title>
-   Cozy Yarn Tracker
-  </title>
-  <style>
-   :root {
-  --bg:#fbf7f2;
-  --card:#fff;
-  --text:#342a27;
-  --muted:#756864;
-  --accent:#8d6e63;
-  --soft:#eee3da;
-  --danger:#b85c5c;
-  --shadow:0 10px 30px #4630281a
-}
-* {
-  box-sizing:border-box
-}
-body {
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:system-ui,-apple-system,sans-serif;
-  padding:16px
-}
-.app {
-  max-width:700px;
-  margin:auto
-}
-header,.row,.head {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px
-}
-h1 {
-  margin:0;
-  font-size:1.8rem
-}
-.sub,.small {
-  color:var(--muted);
-  font-size:.82rem
-}
-.card {
-  background:var(--card);
-  border-radius:22px;
-  padding:16px;
-  margin:14px 0;
-  box-shadow:var(--shadow)
-}
-button,input,textarea,select {
-  font:inherit
-}
-button {
-  border:0;
-  border-radius:12px;
-  padding:10px 12px;
-  background:var(--soft);
-  color:var(--text);
-  font-weight:700
-}
-.accent {
-  background:var(--accent);
-  color:white
-}
-.danger {
-  color:var(--danger)
-}
-.project-name {
-  width:100%;
-  border:0;
-  text-align:center;
-  font-weight:800;
-  font-size:1.25rem
-}
-.count {
-  text-align:center;
-  font-size:6rem;
-  font-weight:850;
-  line-height:1;
-  margin:16px 0
-}
-.controls {
-  display:grid;
-  grid-template-columns:1fr 1.4fr 1fr;
-  gap:10px
-}
-.controls button {
-  font-size:2rem;
-  min-height:70px
-}
-.controls .accent {
-  font-size:3rem
-}
-.grid2,.grid3 {
-  display:grid;
-  gap:10px
-}
-.grid2 {
-  grid-template-columns:1fr 1fr
-}
-.grid3 {
-  grid-template-columns:repeat(3,1fr)
-}
-.field {
-  background:var(--soft);
-  padding:10px;
-  border-radius:14px
-}
-.field label {
-  display:block;
-  font-size:.72rem;
-  color:var(--muted)
-}
-.field input,.field select {
-  width:100%;
-  border:0;
-  background:transparent;
-  outline:0
-}
-.progress {
-  height:10px;
-  background:var(--soft);
-  border-radius:99px;
-  overflow:hidden
-}
-.bar {
-  height:100%;
-  background:var(--accent);
-  width:0
-}
-textarea {
-  width:100%;
-  min-height:75px;
-  border:0;
-  border-radius:14px;
-  background:var(--soft);
-  padding:10px
-}
-.stats {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px
-}
-.stat {
-  text-align:center;
-  background:var(--soft);
-  border-radius:13px;
-  padding:9px
-}
-.stat strong {
-  display:block
-}
-.parts,.files,.activity,.projects {
-  display:grid;
-  gap:8px
-}
-.part,.file,.event,.project {
-  background:var(--soft);
-  border-radius:13px;
-  padding:10px
-}
-.part.depth1 {
-  margin-left:18px
-}
-.part.depth2 {
-  margin-left:36px
-}
-.partgrid {
-  display:grid;
-  grid-template-columns:1fr 80px 80px;
-  gap:7px
-}
-.partgrid input,.partgrid select {
-  width:100%;
-  border:0;
-  border-radius:8px;
-  padding:7px
-}
-.actions {
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-  margin-top:7px
-}
-.actions button {
-  padding:7px 9px;
-  font-size:.78rem;
-  background:white
-}
-.file {
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:8px
-}
-.hidden {
-  display:none
-}
-.toast {
-  position:fixed;
-  bottom:24px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#342a27;
-  color:white;
-  padding:10px 14px;
-  border-radius:30px;
-  opacity:0;
-  transition:.2s
-}
-.toast.show {
-  opacity:1
-}
-@media(max-width:520px) {
-  .grid3 {
-    grid-template-columns:1fr 1fr
-  }
-  .partgrid {
-    grid-template-columns:1fr 70px
-  }
-  .card {
-    padding:14px
-  }
-  .count {
-    font-size:5rem
-  }
-}
-  </style>
- </head>
- <body>
-  <main class="app">
-   <header>
-    <div>
-     <h1>
-      🧶 Cozy Yarn Tracker
-     </h1>
-     <div class="sub">
-      Counters, parts, yarn, time, pictures and PDFs
-     </div>
-    </div>
-    <button id="newProject">
-     ＋
-    </button>
-   </header>
-   <section class="card">
-    <input class="project-name" id="name"/>
-    <div class="sub" id="label" style="text-align:center">
-    </div>
-    <div class="count" id="count">
-     0
-    </div>
-    <div class="controls">
-     <button id="minus">
-      &minus;
-     </button>
-     <button class="accent" id="plus">
-      ＋
-     </button>
-     <button id="plus5">
-      +5
-     </button>
-    </div>
-    <div class="row small" style="margin-top:14px">
-     <span id="progressText">
-     </span>
-     <span id="percent">
-     </span>
-    </div>
-    <div class="progress">
-     <div class="bar" id="bar">
-     </div>
-    </div>
-    <div class="grid2" style="margin-top:12px">
-     <div class="field">
-      <label>
-       Counting
-      </label>
-      <input id="counterType"/>
-     </div>
-     <div class="field">
-      <label>
-       Target
-      </label>
-      <input id="target" min="0" type="number"/>
-     </div>
-    </div>
-    <textarea id="notes" placeholder="Project notes&hellip;" style="margin-top:10px"></textarea>
-    <div class="stats" style="margin-top:12px">
-     <div class="stat">
-      <strong id="age">
-       0
-      </strong>
-      <span class="small">
-       days since start
-      </span>
-     </div>
-     <div class="stat">
-      <strong id="daysWorked">
-       0
-      </strong>
-      <span class="small">
-       days worked
-      </span>
-     </div>
-     <div class="stat">
-      <strong id="tracked">
-       0m
-      </strong>
-      <span class="small">
-       tracked time
-      </span>
-     </div>
-    </div>
-    <div class="row" style="margin-top:10px">
-     <button class="accent" id="timer" style="flex:1">
-      Start work session
-     </button>
-     <span class="small" id="live">
-      00:00:00
-     </span>
-    </div>
-    <div class="actions">
-     <button id="undo">
-      &curvearrowleft; Undo
-     </button>
-     <button id="logToday">
-      &checkmark; Log today
-     </button>
-     <button class="danger" id="reset">
-      Reset
-     </button>
-    </div>
-   </section>
-   <section class="card">
-    <h2>
-     Dates
-    </h2>
-    <div class="grid3">
-     <div class="field">
-      <label>
-       Started
-      </label>
-      <input id="startDate" type="date"/>
-     </div>
-     <div class="field">
-      <label>
-       Last worked
-      </label>
-      <input id="lastWorked" type="date"/>
-     </div>
-     <div class="field">
-      <label>
-       Finished
-      </label>
-      <input id="finished" type="date"/>
-     </div>
-    </div>
-   </section>
-   <section class="card">
-    <h2>
-     Yarn &amp; gauge
-    </h2>
-    <div class="grid2">
-     <div class="field">
-      <label>
-       Yarn brand/name
-      </label>
-      <input id="yarnName"/>
-     </div>
-     <div class="field">
-      <label>
-       Colorway
-      </label>
-      <input id="colorway"/>
-     </div>
-     <div class="field">
-      <label>
-       Yarn weight
-      </label>
-      <select id="weight">
-       <option>
-       </option>
-       <option>
-        Lace
-       </option>
-       <option>
-        Fingering
-       </option>
-       <option>
-        Sport
-       </option>
-       <option>
-        DK
-       </option>
-       <option>
-        Worsted
-       </option>
-       <option>
-        Aran
-       </option>
-       <option>
-        Bulky
-       </option>
-       <option>
-        Super bulky
-       </option>
-      </select>
-     </div>
-     <div class="field">
-      <label>
-       Fiber
-      </label>
-      <input id="fiber"/>
-     </div>
-     <div class="field">
-      <label>
-       Needle/hook size
-      </label>
-      <input id="tool"/>
-     </div>
-     <div class="field">
-      <label>
-       Amount used
-      </label>
-      <input id="amount"/>
-     </div>
-     <div class="field">
-      <label>
-       Gauge stitches
-      </label>
-      <input id="gSt" step="0.1" type="number"/>
-     </div>
-     <div class="field">
-      <label>
-       Gauge rows
-      </label>
-      <input id="gRows" step="0.1" type="number"/>
-     </div>
-     <div class="field">
-      <label>
-       Swatch size
-      </label>
-      <input id="swatch" placeholder="4 in / 10 cm"/>
-     </div>
-     <div class="field">
-      <label>
-       Gauge notes
-      </label>
-      <input id="gNotes"/>
-     </div>
-    </div>
-   </section>
-   <section class="card">
-    <div class="head">
-     <h2>
-      Project parts
-     </h2>
-     <button id="addPart">
-      ＋ Add part
-     </button>
-    </div>
-    <div class="parts" id="parts">
-    </div>
-    <div class="small">
-     Each part and sub-part has its own count, target and status.
-    </div>
-   </section>
-   <section class="card">
-    <div class="head">
-     <h2>
-      Pictures &amp; PDF patterns
-     </h2>
-     <button id="addFiles">
-      ＋ Add files
-     </button>
-    </div>
-    <input accept="image/*,application/pdf" class="hidden" id="fileInput" multiple="" type="file"/>
-    <div class="files" id="files">
-    </div>
-    <div class="small">
-     Files stay in this browser. Export a backup regularly.
-    </div>
-   </section>
-   <section class="card">
-    <div class="head">
-     <h2>
-      Activity
-     </h2>
-     <button class="danger" id="clearActivity">
-      Clear
-     </button>
-    </div>
-    <div class="activity" id="activity">
-    </div>
-   </section>
-   <section class="card">
-    <h2>
-     Backup
-    </h2>
-    <div class="actions">
-     <button id="export">
-      Export full backup
-     </button>
-     <button id="restore">
-      Restore backup
-     </button>
-     <input accept="application/json,.json" class="hidden" id="restoreInput" type="file"/>
-    </div>
-   </section>
-   <section>
-    <h2 class="sub">
-     Your projects
-    </h2>
-    <div class="projects" id="projects">
-    </div>
-   </section>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#8d6e63">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Cozy Yarn Tracker</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <h1>🧶 Cozy Yarn Tracker</h1>
+        <p>Projects, counters, parts, gauge, time, photos, and patterns.</p>
+      </div>
+      <button id="new-project" class="round-button" aria-label="Create a project">＋</button>
+    </header>
+
+    <section class="card counter-card">
+      <input id="project-name" class="project-name" aria-label="Project name">
+      <div id="counter-label" class="muted centered">Row counter</div>
+      <div id="counter-value" class="counter-value">0</div>
+
+      <div class="counter-controls">
+        <button id="decrement" class="soft-button">−</button>
+        <button id="increment" class="primary-counter">＋</button>
+        <button id="add-five" class="soft-button">+5</button>
+      </div>
+
+      <div class="progress-copy">
+        <span id="progress-text"></span>
+        <span id="progress-percent"></span>
+      </div>
+      <div class="progress-track"><div id="progress-fill"></div></div>
+
+      <div class="two-column top-gap">
+        <label class="field">Counting<input id="counter-type" placeholder="Rows"></label>
+        <label class="field">Target<input id="counter-target" type="number" min="0" inputmode="numeric"></label>
+      </div>
+
+      <textarea id="project-notes" class="top-gap" placeholder="Project notes…"></textarea>
+
+      <div class="stats-grid">
+        <div class="stat"><strong id="days-since">0 days</strong><span>Since started</span></div>
+        <div class="stat"><strong id="days-worked">0</strong><span>Days worked</span></div>
+        <div class="stat"><strong id="tracked-time">0m</strong><span>Tracked time</span></div>
+      </div>
+
+      <div class="timer-row">
+        <button id="timer-button" class="primary-button">Start work session</button>
+        <span id="live-timer">00:00:00</span>
+      </div>
+
+      <div class="button-row">
+        <button id="undo">↶ Undo</button>
+        <button id="log-today">✓ Log today</button>
+        <button id="reset-counter" class="danger-text">Reset counter</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Dates</h2>
+      <div class="three-column">
+        <label class="field">Started<input id="start-date" type="date"></label>
+        <label class="field">Last worked<input id="last-worked-date" type="date"></label>
+        <label class="field">Finished<input id="finished-date" type="date"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Yarn & gauge</h2>
+      <div class="two-column">
+        <label class="field">Yarn brand / name<input id="yarn-name"></label>
+        <label class="field">Colorway<input id="colorway"></label>
+        <label class="field">Yarn weight<select id="yarn-weight"><option value=""></option><option>Lace</option><option>Fingering</option><option>Sport</option><option>DK</option><option>Worsted</option><option>Aran</option><option>Bulky</option><option>Super bulky</option></select></label>
+        <label class="field">Fiber content<input id="fiber"></label>
+        <label class="field">Needle / hook size<input id="tool-size"></label>
+        <label class="field">Skeins or grams used<input id="amount-used"></label>
+        <label class="field">Stitches per swatch<input id="gauge-stitches" type="number" min="0" step="0.1"></label>
+        <label class="field">Rows per swatch<input id="gauge-rows" type="number" min="0" step="0.1"></label>
+        <label class="field">Swatch width<input id="gauge-width" placeholder="4 in / 10 cm"></label>
+        <label class="field">Gauge notes<input id="gauge-notes"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <h2>Project parts</h2>
+        <button id="add-part">＋ Add part</button>
+      </div>
+      <div id="parts-list" class="stack"></div>
+      <p class="helper">Parts can contain sub-parts. Each part has its own count, target, status, and notes.</p>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <h2>Photos & PDF patterns</h2>
+        <button id="add-attachments">＋ Add files</button>
+      </div>
+      <input id="attachment-input" type="file" accept="image/*,application/pdf" multiple hidden>
+      <div id="attachment-list" class="stack"></div>
+      <p class="helper">Files stay private in this browser. Export a backup occasionally so they are not lost if browser data is cleared.</p>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <h2>Activity</h2>
+        <button id="clear-activity" class="danger-text">Clear</button>
+      </div>
+      <div id="activity-list" class="stack scroll-list"></div>
+    </section>
+
+    <section class="card">
+      <h2>Backup</h2>
+      <div class="button-row">
+        <button id="export-backup">Export full backup</button>
+        <button id="restore-backup">Restore backup</button>
+        <input id="restore-input" type="file" accept="application/json,.json" hidden>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="project-list-title">Your projects</h2>
+      <div id="project-list" class="stack"></div>
+    </section>
   </main>
-  <div class="toast" id="toast">
-  </div>
-  <script>
-   const KEY='cozy-yarn-counter-v2',OLD='cozy-yarn-counter-v1',DB='cozy-yarn-files',STORE='attachments';
-const $=s=>document.querySelector(s),today=()=>new Date().toISOString().slice(0,10),uid=()=>crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random());
-let undo=[],tick;
-function blank(name='New Yarn Project') {
-  return {
-    id:uid(),name,count:0,target:100,counterType:'Rows',notes:'',startDate:today(),lastWorked:'',finished:'',workDates:[],sessions:[],timerStart:null,activity:[],yarn: {
-    },parts:[]
-  }
-}
-function migrate(p) {
-  return {
-    ...blank(p.name),...p,yarn: {
-      ...blank().yarn,...(p.yarn|| {
-      })
-    },parts:p.parts||[],activity:p.activity||[],workDates:p.workDates||[],sessions:p.sessions||[]
-  }
-}
-function load() {
-  try {
-    let s=JSON.parse(localStorage.getItem(KEY));
-    if(s?.projects?.length)return {
-      ...s,projects:s.projects.map(migrate)
-    };
-    let o=JSON.parse(localStorage.getItem(OLD));
-    if(o?.projects?.length)return {
-      ...o,projects:o.projects.map(migrate)
-    }
-  } catch {
-  }
-  let p=blank('My Yarn Project');
-  return {
-    activeId:p.id,projects:[p]
-  }
-}
-let state=load();
-const p=()=>state.projects.find(x=>x.id===state.activeId)||state.projects[0];
-const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
-function toast(t) {
-  $('#toast').textContent=t;
-  $('#toast').classList.add('show');
-  clearTimeout(toast.t);
-  toast.t=setTimeout(()=>$('#toast').classList.remove('show'),1500)
-}
-function log(t) {
-  let x=p();
-  x.activity.unshift( {
-    at:new Date().toISOString(),text:t
-  });
-  x.activity=x.activity.slice(0,300);
-  mark(false);
-  save();
-  renderActivity()
-}
-function mark(show=true) {
-  let x=p(),d=today();
-  x.lastWorked=d;
-  if(!x.workDates.includes(d))x.workDates.push(d);
-  if(show)log('Worked on project today');
-  save();
-  renderStats()
-}
-function setCount(v) {
-  let x=p(),old=x.count;
-  undo.push( {
-    id:x.id,count:old
-  });
-  x.count=Math.max(0,+v||0);
-  save();
-  renderCounter();
-  log(`${x.counterType||'Row'} count ${old} → ${x.count}`)
-}
-function duration(ms) {
-  let m=Math.floor(ms/60000);
-  return m<60?m+'m':Math.floor(m/60)+'h '+m%60+'m'
-}
-function total(x) {
-  return x.sessions.reduce((s,a)=>s+a.end-a.start,0)+(x.timerStart?Date.now()-x.timerStart:0)
-}
-function renderCounter() {
-  let x=p(),pct=x.target?Math.min(100,Math.round(x.count/x.target*100)):0;
-  $('#count').textContent=x.count;
-  $('#label').textContent=(x.counterType||'Row')+' counter';
-  $('#progressText').textContent=x.target?`${x.count} of ${x.target}`:`${x.count} counted`;
-  $('#percent').textContent=x.target?pct+'%':'No target';
-  $('#bar').style.width=pct+'%'
-}
-function renderStats() {
-  let x=p(),age=Math.max(0,Math.floor((Date.now()-new Date((x.startDate||today())+'T00:00:00'))/86400000));
-  $('#age').textContent=age;
-  $('#daysWorked').textContent=x.workDates.length;
-  $('#tracked').textContent=duration(total(x));
-  $('#timer').textContent=x.timerStart?'Stop work session':'Start work session'
-}
-function live() {
-  let x=p(),s=Math.floor((x.timerStart?Date.now()-x.timerStart:0)/1000);
-  $('#live').textContent=[Math.floor(s/3600),Math.floor(s%3600/60),s%60].map(v=>String(v).padStart(2,'0')).join(':');
-  $('#tracked').textContent=duration(total(x))
-}
-function flat(parts,d=0,o=[]) {
-  parts.forEach(q=> {
-    o.push([q,d]);flat(q.children||[],d+1,o)
-  });
-  return o
-}
-function remove(parts,id) {
-  let i=parts.findIndex(x=>x.id===id);
-  if(i>=0) {
-    parts.splice(i,1);
-    return true
-  }
-  return parts.some(x=>remove(x.children||[],id))
-}
-function newPart(n='New part') {
-  return {
-    id:uid(),name:n,count:0,target:0,status:'Not started',notes:'',children:[]
-  }
-}
-function renderParts() {
-  let h=$('#parts');
-  h.innerHTML='';
-  let arr=flat(p().parts);
-  if(!arr.length)h.innerHTML='<div class="small">No parts yet.</div>';
-  arr.forEach(([q,d])=> {
-    let e=document.createElement('div');e.className='part depth'+Math.min(d,2);e.innerHTML=`<div class="partgrid"><input class="pn"><input class="pc" type="number" min="0"><input class="pt" type="number" min="0"><select class="ps"><option>Not started</option><option>Working</option><option>Paused</option><option>Finished</option></select></div><div class="actions"><button class="m">−1</button><button class="a">+1</button><button class="child">＋ Sub-part</button><button class="note">Notes</button><button class="del danger">Delete</button></div>`;e.querySelector('.pn').value=q.name;e.querySelector('.pc').value=q.count;e.querySelector('.pt').value=q.target;e.querySelector('.ps').value=q.status;e.querySelector('.pn').onchange=z=> {
-      q.name=z.target.value;save();log('Renamed part to '+q.name)
-    };e.querySelector('.pc').onchange=z=> {
-      q.count=Math.max(0,+z.target.value||0);save();log(`${q.name}: count ${q.count}`)
-    };e.querySelector('.pt').onchange=z=> {
-      q.target=Math.max(0,+z.target.value||0);save()
-    };e.querySelector('.ps').onchange=z=> {
-      q.status=z.target.value;save();log(`${q.name} marked ${q.status}`)
-    };e.querySelector('.m').onclick=()=> {
-      q.count=Math.max(0,q.count-1);save();log(`${q.name}: count ${q.count}`);renderParts()
-    };e.querySelector('.a').onclick=()=> {
-      q.count++;save();log(`${q.name}: count ${q.count}`);renderParts()
-    };e.querySelector('.child').onclick=()=> {
-      (q.children||(q.children=[])).push(newPart('New sub-part'));save();renderParts()
-    };e.querySelector('.note').onclick=()=> {
-      let v=prompt('Notes for '+q.name,q.notes||'');if(v!==null) {
-        q.notes=v;save();log('Updated notes for '+q.name)
-      }
-    };e.querySelector('.del').onclick=()=> {
-      if(confirm('Delete this part and its sub-parts?')) {
-        remove(p().parts,q.id);save();renderParts()
-      }
-    };h.appendChild(e)
-  })
-}
-function renderActivity() {
-  let h=$('#activity');
-  h.innerHTML='';
-  (p().activity||[]).slice(0,100).forEach(a=> {
-    let e=document.createElement('div');e.className='event';e.innerHTML=`${a.text}<div class="small">${new Date(a.at).toLocaleString()}</div>`;h.appendChild(e)
-  });
-  if(!h.children.length)h.innerHTML='<div class="small">No activity yet.</div>'
-}
-function renderProjects() {
-  let h=$('#projects');
-  h.innerHTML='';
-  state.projects.forEach(x=> {
-    let e=document.createElement('div');e.className='project row';e.innerHTML=`<strong>${x.name||'Untitled'}</strong><span>${x.count}</span><button>Open</button><button class="danger">×</button>`;e.children[2].onclick=()=> {
-      state.activeId=x.id;save();render()
-    };e.children[3].onclick=()=> {
-      if(state.projects.length===1)return toast('Keep one project');if(confirm('Delete project?')) {
-        state.projects=state.projects.filter(y=>y.id!==x.id);if(state.activeId===x.id)state.activeId=state.projects[0].id;save();render()
-      }
-    };h.appendChild(e)
-  })
-}
-function db() {
-  return new Promise((r,j)=> {
-    let q=indexedDB.open(DB,1);q.onupgradeneeded=()=>q.result.createObjectStore(STORE, {
-      keyPath:'id'
-    });q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)
-  })
-}
-async function allFiles() {
-  let d=await db();
-  return new Promise((r,j)=> {
-    let q=d.transaction(STORE).objectStore(STORE).getAll();q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)
-  })
-}
-async function putFile(v) {
-  let d=await db();
-  return new Promise((r,j)=> {
-    let t=d.transaction(STORE,'readwrite');t.objectStore(STORE).put(v);t.oncomplete=r;t.onerror=()=>j(t.error)
-  })
-}
-async function delFile(id) {
-  let d=await db();
-  return new Promise((r,j)=> {
-    let t=d.transaction(STORE,'readwrite');t.objectStore(STORE).delete(id);t.oncomplete=r;t.onerror=()=>j(t.error)
-  })
-}
-function dataURL(f) {
-  return new Promise((r,j)=> {
-    let x=new FileReader();x.onload=()=>r(x.result);x.onerror=j;x.readAsDataURL(f)
-  })
-}
-async function renderFiles() {
-  let h=$('#files'),fs=(await allFiles()).filter(f=>f.projectId===p().id);
-  h.innerHTML='';
-  fs.forEach(f=> {
-    let e=document.createElement('div');e.className='file';e.innerHTML=`<div><strong>${f.name}</strong><div class="small">${Math.round(f.size/1024)} KB</div></div><div class="actions"><button>Open</button><button class="danger">Delete</button></div>`;e.querySelectorAll('button')[0].onclick=()=>window.open(f.data,'_blank');e.querySelectorAll('button')[1].onclick=async()=> {
-      await delFile(f.id);renderFiles()
-    };h.appendChild(e)
-  });
-  if(!fs.length)h.innerHTML='<div class="small">No files attached.</div>'
-}
-function bind() {
-  let x=p();
-  for(let [id,v] of Object.entries( {
-    name:x.name,counterType:x.counterType,target:x.target,notes:x.notes,startDate:x.startDate,lastWorked:x.lastWorked,finished:x.finished,yarnName:x.yarn.name||'',colorway:x.yarn.colorway||'',weight:x.yarn.weight||'',fiber:x.yarn.fiber||'',tool:x.yarn.tool||'',amount:x.yarn.amount||'',gSt:x.yarn.gSt||'',gRows:x.yarn.gRows||'',swatch:x.yarn.swatch||'',gNotes:x.yarn.gNotes||''
-  }))$('#'+id).value=v
-}
-function render() {
-  bind();
-  renderCounter();
-  renderStats();
-  live();
-  renderParts();
-  renderActivity();
-  renderProjects();
-  renderFiles()
-}
-$('#plus').onclick=()=>setCount(p().count+1);
-$('#minus').onclick=()=>setCount(p().count-1);
-$('#plus5').onclick=()=>setCount(p().count+5);
-$('#undo').onclick=()=> {
-  let u=undo.pop();
-  if(!u||u.id!==p().id)return toast('Nothing to undo');
-  p().count=u.count;
-  save();
-  renderCounter()
-};
-$('#reset').onclick=()=>confirm('Reset counter?')&&setCount(0);
-$('#logToday').onclick=()=>mark(true);
-$('#timer').onclick=()=> {
-  let x=p();
-  if(x.timerStart) {
-    let end=Date.now(),start=x.timerStart;
-    x.sessions.push( {
-      start,end
-    });
-    x.timerStart=null;
-    log('Work session: '+duration(end-start))
-  } else {
-    x.timerStart=Date.now();
-    log('Started work session')
-  }
-  save();
-  renderStats()
-};
-$('#newProject').onclick=()=> {
-  let x=blank('Project '+(state.projects.length+1));
-  state.projects.push(x);
-  state.activeId=x.id;
-  save();
-  render()
-};
-$('#addPart').onclick=()=> {
-  p().parts.push(newPart('Part '+(p().parts.length+1)));
-  save();
-  renderParts()
-};
-$('#clearActivity').onclick=()=> {
-  if(confirm('Clear activity?')) {
-    p().activity=[];
-    save();
-    renderActivity()
-  }
-};
-$('#addFiles').onclick=()=>$('#fileInput').click();
-$('#fileInput').onchange=async e=> {
-  for(let f of e.target.files)await putFile( {
-    id:uid(),projectId:p().id,name:f.name,type:f.type,size:f.size,data:await dataURL(f)
-  });
-  e.target.value='';
-  renderFiles();
-  log('Added pattern files')
-};
-for(let id of ['name','counterType','target','notes','startDate','lastWorked','finished'])$('#'+id).onchange=e=> {
-  let map= {
-    lastWorked:'lastWorked',finished:'finished'
-  };
-  p()[map[id]||id]=id==='target'?Math.max(0,+e.target.value||0):e.target.value;
-  save();
-  renderCounter();
-  renderProjects();
-  renderStats()
-};
-for(let id of ['yarnName','colorway','weight','fiber','tool','amount','gSt','gRows','swatch','gNotes'])$('#'+id).onchange=e=> {
-  let m= {
-    yarnName:'name'
-  };
-  p().yarn[m[id]||id]=e.target.value;
-  save();
-  mark(false)
-};
-$('#export').onclick=async()=> {
-  let blob=new Blob([JSON.stringify( {
-    version:2,state,attachments:await allFiles()
-  })], {
-    type:'application/json'
-  }),a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='cozy-yarn-backup-'+today()+'.json';
-  a.click()
-};
-$('#restore').onclick=()=>$('#restoreInput').click();
-$('#restoreInput').onchange=async e=> {
-  try {
-    let d=JSON.parse(await e.target.files[0].text());
-    if(!d.state?.projects?.length)throw 0;
-    if(!confirm('Replace current data?'))return;
-    state= {
-      ...d.state,projects:d.state.projects.map(migrate)
-    };
-    let fs=await allFiles();
-    for(let f of fs)await delFile(f.id);
-    for(let f of d.attachments||[])await putFile(f);
-    save();
-    render();
-    toast('Backup restored')
-  } catch {
-    alert('Invalid backup')
-  }
-};
-setInterval(live,1000);
-render();
-  </script>
- </body>
+
+  <dialog id="preview-dialog" class="preview-dialog">
+    <div class="preview-header">
+      <div>
+        <strong id="preview-title"></strong>
+        <div id="preview-meta" class="muted"></div>
+      </div>
+      <button id="close-preview" class="round-button" aria-label="Close preview">×</button>
+    </div>
+    <div id="preview-body" class="preview-body"></div>
+    <div class="preview-actions">
+      <a id="open-original" class="button-link" target="_blank" rel="noopener">Open in Safari</a>
+      <a id="download-original" class="button-link" download>Save a copy</a>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="js/app.js"></script>
+</body>
 </html>
