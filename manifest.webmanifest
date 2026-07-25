@@ -1,9 +1,0 @@
-{
-  "name": "Cozy Yarn Tracker",
-  "short_name": "Yarn Tracker",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#fbf7f2",
-  "theme_color": "#8d6e63",
-  "description": "An offline yarn project tracker with counters, parts, gauge, photos, and PDF patterns."
-}
