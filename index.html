@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f4ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cozy Yarn">
+<link rel="apple-touch-icon" href="./assets/icons/icon-180.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>Cozy Yarn Tracker</title>
+<link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+<main class="app">
+<header class="topbar"><div class="brand"><img class="logo" src="./assets/icons/icon-180.png" alt=""><div><h1>Cozy Yarn</h1><div class="muted">your little crafting nook ♡</div></div></div><button class="icon-btn" id="newProjectBtn">＋</button></header>
+<section id="homeScreen">
+<div class="card hero"><div class="hero-row"><div><h2 id="greeting">Good evening 💗</h2><p class="muted">Grab your yarn, take a breath, and enjoy the cozy time.</p></div><div class="yarn-bubble">🧶</div></div><div class="stats"><div class="stat"><strong id="monthTime">0m</strong><span class="muted">this month</span></div><div class="stat"><strong id="activeProjects">0</strong><span class="muted">active</span></div><div class="stat"><strong id="monthRows">0</strong><span class="muted">rows</span></div></div></div>
+<div class="card"><div class="section-head"><h2>Continue where you left off</h2><span class="pill">sweet progress ✨</span></div><div id="projectList" class="project-list"></div></div>
+<div class="card"><div class="section-head"><h2>Recent activity</h2><button class="mini" id="clearActivity">Clear</button></div><div id="homeActivity" class="activity"></div></div>
+</section>
+<section id="projectScreen" class="hidden">
+<div class="screen-title"><button class="icon-btn" id="backBtn">‹</button><input id="projectName" style="font-weight:850;font-size:1.2rem;background:transparent;border:0"><button class="icon-btn" id="projectMenuBtn">•••</button></div>
+<div class="tabs"><button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="parts">Parts</button><button class="tab" data-tab="journal">Journal</button><button class="tab" data-tab="details">Details</button></div>
+<div id="tab-overview" class="tab-panel">
+<div class="card counter"><div class="muted" id="counterLabel">Row counter</div><div class="count" id="projectCount">0</div><div class="counter-controls"><button id="minusBtn">−</button><button id="plusBtn" class="plus">＋</button><button id="plus5Btn">+5</button></div><div style="display:flex;justify-content:space-between;margin-top:15px"><span id="progressText" class="muted"></span><strong id="progressPct"></strong></div><div class="progress"><i id="projectBar"></i></div></div>
+<div class="card"><div class="timer-panel"><div><div class="muted">Project total</div><div id="projectTotalTime" class="timer-time">0m</div><div id="liveTimer" class="muted">No timer running</div></div><button id="projectTimerBtn" class="btn primary">Start timer</button></div></div>
+<div class="card"><div class="section-head"><h2>Parts at a glance</h2><button class="mini pink" id="quickAddPart">＋ Add</button></div><div id="overviewParts" class="part-tree"></div></div>
+</div>
+<div id="tab-parts" class="tab-panel hidden"><div class="card"><div class="section-head"><h2>Project parts</h2><button class="btn soft" id="addRootPart">＋ Add part</button></div><p class="muted">Sub-part time and work dates roll up automatically.</p><div id="partsTree" class="part-tree"></div></div></div>
+<div id="tab-journal" class="tab-panel hidden"><div class="card"><div class="section-head"><h2>Session journal</h2><button class="mini" id="manualLogBtn">＋ Log work</button></div><div id="projectActivity" class="activity"></div></div></div>
+<div id="tab-details" class="tab-panel hidden"><div class="card"><h2>Project details</h2><div class="fields"><div><label>Counting</label><input id="counterType"></div><div><label>Target</label><input id="target" type="number"></div><div><label>Start date</label><input id="startDate" type="date"></div><div><label>Finished date</label><input id="finishedDate" type="date"></div><div><label>Yarn</label><input id="yarnName"></div><div><label>Needles / hook</label><input id="toolSize"></div></div><div style="margin-top:10px"><label>Notes</label><textarea id="projectNotes"></textarea></div></div></div>
+</section>
+</main>
+<nav class="bottom-nav"><button class="nav-btn active" data-nav="home"><span>⌂</span>Home</button><button class="nav-btn" data-nav="project"><span>🧶</span>Project</button><button class="nav-btn" data-nav="journal"><span>♡</span>Journal</button></nav>
+<div id="modal" class="modal hidden"><div class="sheet" id="sheet"></div></div><div id="toast" class="toast"></div>
+<script src="./js/app.js" defer></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+}
+</script>
+</body></html>
