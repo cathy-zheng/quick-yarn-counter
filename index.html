@@ -1,150 +1,43 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#8d6e63">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>Cozy Yarn Tracker</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="css/styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f4ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cozy Yarn">
+<link rel="apple-touch-icon" href="./assets/icons/icon-180.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>Cozy Yarn Tracker</title>
+<link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
-  <main class="app-shell">
-    <header class="topbar">
-      <div>
-        <h1>🧶 Cozy Yarn Tracker</h1>
-        <p>Projects, counters, parts, gauge, time, photos, and patterns.</p>
-      </div>
-      <button id="new-project" class="round-button" aria-label="Create a project">＋</button>
-    </header>
-
-    <section class="card counter-card">
-      <input id="project-name" class="project-name" aria-label="Project name">
-      <div id="counter-label" class="muted centered">Row counter</div>
-      <div id="counter-value" class="counter-value">0</div>
-
-      <div class="counter-controls">
-        <button id="decrement" class="soft-button">−</button>
-        <button id="increment" class="primary-counter">＋</button>
-        <button id="add-five" class="soft-button">+5</button>
-      </div>
-
-      <div class="progress-copy">
-        <span id="progress-text"></span>
-        <span id="progress-percent"></span>
-      </div>
-      <div class="progress-track"><div id="progress-fill"></div></div>
-
-      <div class="two-column top-gap">
-        <label class="field">Counting<input id="counter-type" placeholder="Rows"></label>
-        <label class="field">Target<input id="counter-target" type="number" min="0" inputmode="numeric"></label>
-      </div>
-
-      <textarea id="project-notes" class="top-gap" placeholder="Project notes…"></textarea>
-
-      <div class="stats-grid">
-        <div class="stat"><strong id="days-since">0 days</strong><span>Since started</span></div>
-        <div class="stat"><strong id="days-worked">0</strong><span>Days worked</span></div>
-        <div class="stat"><strong id="tracked-time">0m</strong><span>Tracked time</span></div>
-      </div>
-
-      <div class="timer-row">
-        <button id="timer-button" class="primary-button">Start work session</button>
-        <span id="live-timer">00:00:00</span>
-      </div>
-
-      <div class="button-row">
-        <button id="undo">↶ Undo</button>
-        <button id="log-today">✓ Log today</button>
-        <button id="reset-counter" class="danger-text">Reset counter</button>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>Dates</h2>
-      <div class="three-column">
-        <label class="field">Started<input id="start-date" type="date"></label>
-        <label class="field">Last worked<input id="last-worked-date" type="date"></label>
-        <label class="field">Finished<input id="finished-date" type="date"></label>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>Yarn & gauge</h2>
-      <div class="two-column">
-        <label class="field">Yarn brand / name<input id="yarn-name"></label>
-        <label class="field">Colorway<input id="colorway"></label>
-        <label class="field">Yarn weight<select id="yarn-weight"><option value=""></option><option>Lace</option><option>Fingering</option><option>Sport</option><option>DK</option><option>Worsted</option><option>Aran</option><option>Bulky</option><option>Super bulky</option></select></label>
-        <label class="field">Fiber content<input id="fiber"></label>
-        <label class="field">Needle / hook size<input id="tool-size"></label>
-        <label class="field">Skeins or grams used<input id="amount-used"></label>
-        <label class="field">Stitches per swatch<input id="gauge-stitches" type="number" min="0" step="0.1"></label>
-        <label class="field">Rows per swatch<input id="gauge-rows" type="number" min="0" step="0.1"></label>
-        <label class="field">Swatch width<input id="gauge-width" placeholder="4 in / 10 cm"></label>
-        <label class="field">Gauge notes<input id="gauge-notes"></label>
-      </div>
-    </section>
-
-    <section class="card">
-      <div class="section-heading">
-        <h2>Project parts</h2>
-        <button id="add-part">＋ Add part</button>
-      </div>
-      <div id="parts-list" class="stack"></div>
-      <p class="helper">Parts can contain sub-parts. Each part has its own count, target, status, and notes.</p>
-    </section>
-
-    <section class="card">
-      <div class="section-heading">
-        <h2>Photos & PDF patterns</h2>
-        <button id="add-attachments">＋ Add files</button>
-      </div>
-      <input id="attachment-input" type="file" accept="image/*,application/pdf" multiple hidden>
-      <div id="attachment-list" class="stack"></div>
-      <p class="helper">Files stay private in this browser. Export a backup occasionally so they are not lost if browser data is cleared.</p>
-    </section>
-
-    <section class="card">
-      <div class="section-heading">
-        <h2>Activity</h2>
-        <button id="clear-activity" class="danger-text">Clear</button>
-      </div>
-      <div id="activity-list" class="stack scroll-list"></div>
-    </section>
-
-    <section class="card">
-      <h2>Backup</h2>
-      <div class="button-row">
-        <button id="export-backup">Export full backup</button>
-        <button id="restore-backup">Restore backup</button>
-        <input id="restore-input" type="file" accept="application/json,.json" hidden>
-      </div>
-    </section>
-
-    <section>
-      <h2 class="project-list-title">Your projects</h2>
-      <div id="project-list" class="stack"></div>
-    </section>
-  </main>
-
-  <dialog id="preview-dialog" class="preview-dialog">
-    <div class="preview-header">
-      <div>
-        <strong id="preview-title"></strong>
-        <div id="preview-meta" class="muted"></div>
-      </div>
-      <button id="close-preview" class="round-button" aria-label="Close preview">×</button>
-    </div>
-    <div id="preview-body" class="preview-body"></div>
-    <div class="preview-actions">
-      <a id="open-original" class="button-link" target="_blank" rel="noopener">Open in Safari</a>
-      <a id="download-original" class="button-link" download>Save a copy</a>
-    </div>
-  </dialog>
-
-  <div id="toast" class="toast"></div>
-  <script type="module" src="js/app.js"></script>
-</body>
-</html>
+<main class="app">
+<header class="topbar"><div class="brand"><img class="logo" src="./assets/icons/icon-180.png" alt=""><div><h1>Cozy Yarn</h1><div class="muted">your little crafting nook ♡</div></div></div><button class="icon-btn" id="newProjectBtn">＋</button></header>
+<section id="homeScreen">
+<div class="card hero"><div class="hero-row"><div><h2 id="greeting">Good evening 💗</h2><p class="muted">Grab your yarn, take a breath, and enjoy the cozy time.</p></div><div class="yarn-bubble">🧶</div></div><div class="stats"><div class="stat"><strong id="monthTime">0m</strong><span class="muted">this month</span></div><div class="stat"><strong id="activeProjects">0</strong><span class="muted">active</span></div><div class="stat"><strong id="monthRows">0</strong><span class="muted">rows</span></div></div></div>
+<div class="card"><div class="section-head"><h2>Continue where you left off</h2><span class="pill">sweet progress ✨</span></div><div id="projectList" class="project-list"></div></div>
+<div class="card"><div class="section-head"><h2>Recent activity</h2><button class="mini" id="clearActivity">Clear</button></div><div id="homeActivity" class="activity"></div></div>
+</section>
+<section id="projectScreen" class="hidden">
+<div class="screen-title"><button class="icon-btn" id="backBtn">‹</button><input id="projectName" style="font-weight:850;font-size:1.2rem;background:transparent;border:0"><button class="icon-btn" id="projectMenuBtn">•••</button></div>
+<div class="tabs"><button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="parts">Parts</button><button class="tab" data-tab="journal">Journal</button><button class="tab" data-tab="details">Details</button></div>
+<div id="tab-overview" class="tab-panel">
+<div class="card counter"><div class="muted" id="counterLabel">Row counter</div><div class="count" id="projectCount">0</div><div class="counter-controls"><button id="minusBtn">−</button><button id="plusBtn" class="plus">＋</button><button id="plus5Btn">+5</button></div><div style="display:flex;justify-content:space-between;margin-top:15px"><span id="progressText" class="muted"></span><strong id="progressPct"></strong></div><div class="progress"><i id="projectBar"></i></div></div>
+<div class="card"><div class="timer-panel"><div><div class="muted">Project total</div><div id="projectTotalTime" class="timer-time">0m</div><div id="liveTimer" class="muted">No timer running</div></div><button id="projectTimerBtn" class="btn primary">Start timer</button></div></div>
+<div class="card"><div class="section-head"><h2>Parts at a glance</h2><button class="mini pink" id="quickAddPart">＋ Add</button></div><div id="overviewParts" class="part-tree"></div></div>
+</div>
+<div id="tab-parts" class="tab-panel hidden"><div class="card"><div class="section-head"><h2>Project parts</h2><button class="btn soft" id="addRootPart">＋ Add part</button></div><p class="muted">Sub-part time and work dates roll up automatically.</p><div id="partsTree" class="part-tree"></div></div></div>
+<div id="tab-journal" class="tab-panel hidden"><div class="card"><div class="section-head"><h2>Session journal</h2><button class="mini" id="manualLogBtn">＋ Log work</button></div><div id="projectActivity" class="activity"></div></div></div>
+<div id="tab-details" class="tab-panel hidden"><div class="card"><h2>Project details</h2><div class="fields"><div><label>Counting</label><input id="counterType"></div><div><label>Target</label><input id="target" type="number"></div><div><label>Start date</label><input id="startDate" type="date"></div><div><label>Finished date</label><input id="finishedDate" type="date"></div><div><label>Yarn</label><input id="yarnName"></div><div><label>Needles / hook</label><input id="toolSize"></div></div><div style="margin-top:10px"><label>Notes</label><textarea id="projectNotes"></textarea></div></div></div>
+</section>
+</main>
+<nav class="bottom-nav"><button class="nav-btn active" data-nav="home"><span>⌂</span>Home</button><button class="nav-btn" data-nav="project"><span>🧶</span>Project</button><button class="nav-btn" data-nav="journal"><span>♡</span>Journal</button></nav>
+<div id="modal" class="modal hidden"><div class="sheet" id="sheet"></div></div><div id="toast" class="toast"></div>
+<script src="./js/app.js" defer></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+}
+</script>
+</body></html>
